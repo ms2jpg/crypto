@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from caesar import Caesar
 from provenzano import Provenzano
 import tkinter as tk
