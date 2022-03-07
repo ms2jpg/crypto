@@ -12,8 +12,19 @@ i przykład zaszyfrowania:
 Tekst jawny: MĘŻNY BĄDŹ, CHROŃ PUŁK TWÓJ I SZEŚĆ FLAG
 Tekst zaszyfrowany: OHBÓŻ DĆFĄ, EKTRP ŚZŃM YŹSŁ L UAGWĘ INCJ
 ```
+## Alfabet
+Alfabet zależnie od konfiguracji programu może się składać z:
+* mały i wielkich liter alfabetu
+* cyfr
+* polskich znaków
+
+Znaki białe oraz interpunkcyjne są przepisywane bez zmian.
+
+## Dane wejściowe
+Dowolny tekst o dowolnym rozmiarze wpisany z klawiatury lub załadowany z pliku.
 
 ## Uruchomienie
+Wymagany python 3.7+:
 ```
 python3 main.py
 ```

@@ -4,9 +4,11 @@ from provenzano import Provenzano
 import tkinter as tk
 
 from tkinter import *
+from tkinter.filedialog import askopenfile
+from tkinter.filedialog import asksaveasfile
 
 window = Tk()
-window.title("Szyfr cezara")
+window.title("Szyfr cezara - Krzysztof Krzyżaniak")
 # window.geometry('640x480')
 Label(window, text="Input").grid(columnspan=2)
 txt = Text(window, width=64, height=8)
@@ -47,6 +49,27 @@ def pdecrypt():
     txt2.delete("1.0", tk.END)
     txt2.insert('end-1c', p.decrypt(txt.get("1.0", "end-1c")))
 
+def load_from_file():
+    file_path = askopenfile(mode='r')
+    if file_path is not None:
+        with file_path as f:
+            txt.delete("1.0", tk.END)
+            txt.insert('end-1c', str(f.read()))
+
+def save_to_file():
+    file = asksaveasfile(mode='w', defaultextension=".txt")
+    if file is not None:
+        with file as f:
+            f.write(txt2.get("1.0", "end-1c"))
+            f.close()
+
+
+
+load_from_file_btn = Button(window, text="Load from file", command=load_from_file)
+load_from_file_btn.grid(column=0, row=0)
+
+save_to_file_btn = Button(window, text="Save", command=save_to_file)
+save_to_file_btn.grid(column=0, row=2)
 
 encrypt_btn = Button(window, text="Encrypt", command=encrypt)
 encrypt_btn.grid(column=0, row=4)
