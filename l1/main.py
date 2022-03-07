@@ -22,7 +22,7 @@ txt2.grid(row=3, columnspan=2)
 def encrypt():
     c = Caesar(int(key_entry.get()), {
         'alpha': alpha.get(),
-        'number': number.get(),
+        'numeric': number.get(),
         'polish': polish.get()
 
     })
@@ -85,9 +85,11 @@ number = IntVar()
 polish = IntVar()
 
 alpha_btn = Checkbutton(window, text="[A-z]", variable=alpha)
+alpha_btn.select()
 alpha_btn.grid(column=0, row=6)
 number_btn = Checkbutton(window, text="[0-9]", variable=number)
 number_btn.grid(column=1, row=6)
+number_btn.select()
 polish_btn = Checkbutton(window, text="polskie znaki", variable=polish)
 polish_btn.grid(column=0, row=7)
 Label(window, text="Shift:").grid(column=1, row=7)
