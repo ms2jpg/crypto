@@ -32,6 +32,8 @@ class Caesar:
         if key is None:
             key = self.key
         uppercase_map = map(lambda l: l.isupper(), s)
+        print('ALPHABET:', ''.join(self.alphabet))
+
         encrypted = [
             self.alphabet[(self.alphabet.index(let) + key) % len(self.alphabet)] if let in self.alphabet
             else let

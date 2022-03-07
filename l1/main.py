@@ -32,7 +32,7 @@ def encrypt():
 def decrypt():
     c = Caesar(int(key_entry.get()), {
         'alpha': alpha.get(),
-        'number': number.get(),
+        'numeric': number.get(),
         'polish': polish.get()
 
     })
