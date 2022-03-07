@@ -23,7 +23,7 @@ class Caesar:
             opts = {}
         self.alphabet = ''
         for o in self.defaults:
-            if (o in opts and opts[o]) or self.defaults[o]['default']:
+            if (o in opts and opts[o]) or (o not in opts and self.defaults[o]['default']):
                 self.alphabet += self.defaults[o]['alphabet']
         self.alphabet = list(set(self.alphabet))
         self.alphabet.sort()
