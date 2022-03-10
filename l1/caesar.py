@@ -28,10 +28,21 @@ class Caesar:
         self.alphabet = list(set(self.alphabet))
         self.alphabet.sort()
 
+    def atbash(self, s):
+        reverse = self.alphabet[::-1]
+        uppercase_bitmap = [l.isupper() for l in s]
+        a = [reverse[self.alphabet.index(letter)] if letter in self.alphabet else letter for letter in s.lower()]
+        return ''.join([
+            c[0].upper() if c[1] else c[0]
+            for c in zip(a, uppercase_bitmap)
+        ])
+
     def encrypt(self, s, key=None):
         if key is None:
             key = self.key
         uppercase_map = map(lambda l: l.isupper(), s)
+        print('ALPHABET:', ''.join(self.alphabet), '->', self.key)
+
         encrypted = [
             self.alphabet[(self.alphabet.index(let) + key) % len(self.alphabet)] if let in self.alphabet
             else let
