@@ -1,13 +1,14 @@
 import argparse
 from aes_ecb import AES_ECB
 from aes_cbc import AES_CBC
+from aes_ctr import AES_CTR
 import utils
 
 parser = argparse.ArgumentParser(description='Encrypt or decrypt message using AES')
 
 parser.add_argument('-e', '--encrypt', help='Encrypt message', action='store_true')
 parser.add_argument('-d', '--decrypt', help='Decrypt message', action='store_true')
-parser.add_argument('-m', '--mode', choices=['aes-ecb', 'aes-cbc'], required=True, help='AES block mode')
+parser.add_argument('-m', '--mode', choices=['aes-ecb', 'aes-cbc', 'aes-ctr'], required=True, help='AES block mode')
 parser.add_argument('-i', '--input', required=True, help='Input file')
 parser.add_argument('-o', '--output', required=True, help='Output file')
 parser.add_argument('-p', '--password', required=False, help='Password')
@@ -41,10 +42,13 @@ except UnicodeDecodeError:
 
 if args.mode == 'aes-ecb':
     crypt = AES_ECB(key, verbose=args.verbose)
-elif args.mode == 'aes-cbc':
+elif args.mode in ['aes-cbc', 'aes-ctr']:
     if args.initial_value_type == 'hex':
         args.initial_value = bytearray.fromhex(args.initial_value)
-    crypt = AES_CBC(key, iv=args.initial_value, verbose=args.verbose)
+    if args.mode == 'aes-cbc':
+        crypt = AES_CBC(key, iv=args.initial_value, verbose=args.verbose)
+    else:
+        crypt = AES_CTR(key, iv=args.initial_value, verbose=args.verbose)
     if args.initial_value is None:
         if args.initial_value_type is None or args.initial_value_type == 'hex':
             print(f'Initial value: {crypt.iv.hex()}')
