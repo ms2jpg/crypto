@@ -1,117 +1,61 @@
-from Crypto.Cipher import AES
-import os
-import random
+import argparse
+from aes_ecb import AES_ECB
+from aes_cbc import AES_CBC
+import utils
+
+parser = argparse.ArgumentParser(description='Encrypt or decrypt message using AES')
+
+parser.add_argument('-e', '--encrypt', help='Encrypt message', action='store_true')
+parser.add_argument('-d', '--decrypt', help='Decrypt message', action='store_true')
+parser.add_argument('-m', '--mode', choices=['aes-ecb', 'aes-cbc'], required=True, help='AES block mode')
+parser.add_argument('-i', '--input', required=True, help='Input file')
+parser.add_argument('-o', '--output', required=True, help='Output file')
+parser.add_argument('-p', '--password', required=False, help='Password')
+parser.add_argument('-iv', '--initial-value', required=False, help='Initial value (only acceptable for AES-CBC)')
+parser.add_argument('-ivt', '--initial-value-type', choices=['raw', 'hex'], required=False, help='Initial value type')
+parser.add_argument('-v', '--verbose', help='Verbose mode', action='store_true')
+args = parser.parse_args()
+message = ''
+try:
+    with open(args.input, 'rb') as input_file:
+        message = input_file.read()
+except FileNotFoundError:
+    print(f'[ERROR] No such input file: {args.input}')
+    exit()
+except UnicodeDecodeError:
+    print('[ERROR] Input file can\'t be converted to UTF-8!')
+    exit()
+
+if args.password is None:
+    args.password = input('Password: ')
+
+if len(args.password) not in [16, 24, 32]:
+    print('[ERROR] AES key must be either 16, 24, or 32 bytes long')
+    exit()
+
+key = ''
+try:
+    key = args.password.encode('utf-8')
+except UnicodeDecodeError:
+    print('[ERROR] Password must be in UTF-8')
+
+if args.mode == 'aes-ecb':
+    crypt = AES_ECB(key, verbose=args.verbose)
+elif args.mode == 'aes-cbc':
+    if args.initial_value_type == 'hex':
+        args.initial_value = bytearray.fromhex(args.initial_value)
+    crypt = AES_CBC(key, iv=args.initial_value, verbose=args.verbose)
+    if args.initial_value is None:
+        if args.initial_value_type is None or args.initial_value_type == 'hex':
+            print(f'Initial value: {crypt.iv.hex()}')
+        else:
+            print(f'Initial value: {crypt.iv}')
+output = ''
+if args.encrypt:
+    output = crypt.encrypt(message)
+elif args.decrypt:
+    output = crypt.decrypt(message)
 
 
-def get_random_unicode(length):
-    try:
-        get_char = unichr
-    except NameError:
-        get_char = chr
-
-    # Update this to include code point ranges to be sampled
-    include_ranges = [
-        ( 0x0021, 0x0021 ),
-        ( 0x0023, 0x0026 ),
-        ( 0x0028, 0x007E ),
-        ( 0x00A1, 0x00AC ),
-        ( 0x00AE, 0x00FF ),
-        ( 0x0100, 0x017F ),
-        ( 0x0180, 0x024F ),
-        ( 0x2C60, 0x2C7F ),
-        ( 0x16A0, 0x16F0 ),
-        ( 0x0370, 0x0377 ),
-        ( 0x037A, 0x037E ),
-        ( 0x0384, 0x038A ),
-        ( 0x038C, 0x038C ),
-    ]
-
-    alphabet = [
-        get_char(code_point) for current_range in include_ranges
-            for code_point in range(current_range[0], current_range[1] + 1)
-    ]
-    return ''.join(random.choice(alphabet) for i in range(length))
-
-
-
-
-class AES_ECB:
-    BLOCK_SIZE = 16  # Bytes
-
-    def __init__(self, key):
-        self.key = key
-        self.aes = AES.new(self.key, AES.MODE_ECB)
-
-    def encrypt(self, raw):
-        raw = self.pad(raw)
-        return self.aes.encrypt(raw)
-
-    def decrypt(self, enc):
-        return self.unpad(self.aes.decrypt(enc))
-
-    @staticmethod
-    def pad(s):
-        return s + ((AES_ECB.BLOCK_SIZE - len(s) % AES_ECB.BLOCK_SIZE) * chr(
-            AES_ECB.BLOCK_SIZE - len(s) % AES_ECB.BLOCK_SIZE)).encode('utf-8')
-
-    @staticmethod
-    def unpad(s):
-        last_byte = s[-1]
-        if last_byte > AES_ECB.BLOCK_SIZE:
-            return s
-        if all(b == last_byte for b in s[AES_ECB.BLOCK_SIZE - last_byte:]):
-            return s[:AES_ECB.BLOCK_SIZE - last_byte]
-        return s
-
-    @staticmethod
-    def sxor(s1, s2):
-        return ''.join(chr(ord(a) ^ ord(b)) for a, b in zip(s1, s2))
-
-    @staticmethod
-    def byte_xor(ba1, ba2):
-        return bytes([_a ^ _b for _a, _b in zip(ba1, ba2)])
-
-    @staticmethod
-    def split_block(data, size):
-        for i in range(0, len(data), size):
-            yield data[i:i + size]
-
-
-class AES_CBC(AES_ECB):
-    def __init__(self, key, iv=None):
-        super().__init__(key)
-        if iv is None:
-            # iv = os.urandom(AES_ECB.BLOCK_SIZE)
-            iv = get_random_unicode(AES_ECB.BLOCK_SIZE).encode('utf-8')
-        self.iv = iv
-        print('iv:', self.iv.decode('utf-8'))
-
-    def encrypt(self, msg):
-        print('encryption')
-        msg = AES_ECB.pad(msg)
-        encrypted = b''
-        v = self.iv
-        for block in AES_ECB.split_block(msg, AES_ECB.BLOCK_SIZE):
-            new_block = AES_ECB.byte_xor(block, v)
-            new_block = self.aes.encrypt(new_block)
-            encrypted += new_block
-            print(block, '->', new_block.hex())
-            v = new_block
-        return encrypted
-
-    def decrypt(self, msg):
-        print('decryption')
-        v = self.iv
-        for block in AES_ECB.split_block(msg, AES_ECB.BLOCK_SIZE):
-            new_block = self.aes.decrypt(block)
-            new_block = AES_ECB.byte_xor(new_block, v)
-            new_block = AES_ECB.unpad(new_block)
-            print(block.hex(), '->', new_block)
-            v = block
-            # print(new_block)
-
-
-message = '''co cie boli? czy az tak cie to boli? ze rysiu peja ma dzis szanse ucziciwie zarobic?'''
-x = AES_CBC(('a' * 16).encode('utf-8'), b'b'*16)
-
-x.decrypt(x.encrypt(message.encode('utf-8')))
+with open(args.output, 'wb') as output_file:
+    output_file.write(output)
