@@ -1,4 +1,16 @@
-# 1. Testy szybkości
+- [Testy szybkości](#testy-szybko-ci)
+- [Anomalie](#anomalie)
+  * [AES-EBC](#aes-ebc)
+    + [Usunąć cały blok](#usun---ca-y-blok)
+    + [Powielić cały blok](#powieli--ca-y-blok)
+    + [Zamienić bloki miejscami](#zamieni--bloki-miejscami)
+    + [Dodać zupełnie nowy blok szyfrogramu](#doda--zupe-nie-nowy-blok-szyfrogramu)
+    + [Zmienić wartość jednego bitu/bajtu w bloku](#zmieni--warto---jednego-bitu-bajtu-w-bloku)
+    + [Zamiana miejscami bajtów wewnątrz bloku](#zamiana-miejscami-bajt-w-wewn-trz-bloku)
+    + [Usunąć fragment bloku](#usun---fragment-bloku)
+
+
+# Testy szybkości
 
 |Plik| Rozmiar  |
 |---|:--------:|
