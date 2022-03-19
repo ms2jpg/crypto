@@ -291,3 +291,212 @@ Zmiana miejscami bajtów wewnątrz bloku praktycznie w całości zmienia deszyfr
 
 ### Usunąć fragment bloku
 Szyfrogram nie daje się odszyfrować.
+
+## AES-CBC
+### Usunąć cały blok
+Po usunięciu bloku dalsze bloki zostają uszkodzone z uwagi na specyfikę CBC (xor z poprzednim blokiem).
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_delete_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  c179 a606 3b36 99c0 9fd8 1baa ac34 513f .y..;6.......4Q?
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     <
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab        6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_delete_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  70df dd01 8c57 3b44 e239 7fcf 5653 7a45 p....W;D.9..VSzE
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     <
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_delete_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  5a87 6072 c41a aaed 494a cedf f36c 9e23 Z.`r....IJ...l.#
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     <
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+### Powielić cały blok
+Odszyfrowany zduplikowany blok zostaje zniekształcony, ponieważ xoruje się ze swoją poprzednią kopią. Wszystkie inne bloki są poprawne.
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_duplicate_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+                                                              >  d169 b616 3138 97ca 95ce 0db0 b62a 4f25 .i..18.......*O%
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl        7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab        6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_duplicate_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+                                                              >  70df dd01 8c57 3b44 e239 7fcf 5653 7a45 p....W;D.9..VSzE
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_duplicate_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+                                                              >  538f 6e72 ca0c a2e7 5c42 8b9c df6e 9260 S.nr....\B...n.`
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic        6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+### Zamienić bloki miejscami
+Wszystkie bloki po pierwszym zamienionym bloku zostają nieprawidłowo odszyfrowane z uwagi na zupełnie inny blok do xorowania.
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_block_swap.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  c179 a606 3b36 99c0 9fd8 1baa ac34 513f .y..;6.......4Q?
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  16a9 a3b0 1143 87d5 e5a9 222c d1ef 94a0 .....C....",....
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  aaae 7ad6 5109 636b 0511 58e4 1ebf bae7 ..z.Q.ck..X.....
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_block_swap.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  70df dd01 8c57 3b44 e239 7fcf 5653 7a45 p....W;D.9..VSzE
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  d40c f3c4 1e46 1e62 92cb dbb9 3414 1643 .....F.b....4..C
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c5b2 4fa4 f370 4447 1193 c517 0326 0d67 ..O..pDG.....&.g
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_block_swap.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  5a87 6072 c41a aaed 494a cedf f36c 9e23 Z.`r....IJ...l.#
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  8952 b829 6f6d 7a80 d777 ca9a 3440 0198 .R.)omz..w..4@..
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  f6fd a23e cb41 ac1e e75e 2e26 9847 f6d8 ...>.A...^.&.G..
+```
+
+### Dodać zupełnie nowy blok szyfrogramu
+Dodany losowy blok szyfrogramu deszyfruje się do losowych bajtów, kolejny blok jest niepoprawnie deszyfrowany poprzez inny poprzedni blok do xorowania. Następne bloki poprawnie się deszyfrują.
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_add_random_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  ee21 2648 6e28 ceb1 1abe 868b a6d6 ec2e .!&Hn(..........
+                                                              >  3d6f 258c ea0e b184 e5db f169 a34c 4fcb =o%........i.LO.
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl        7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab        6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_add_random_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  0d68 1513 7bdd d80b a4df b43f e0d0 29e0 .h..{......?..).
+                                                              >  6650 127f f361 8370 c822 f1cd 2f17 50be fP...a.p."../.P.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_add_random_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  4c63 bfd8 ef3c 5be6 9753 3129 249f a616 Lc...<[..S1)$...
+                                                              >  ac39 82d2 762d 569b c32a 604d 5489 a0ab .9..v-V..*`MT...
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic        6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+ ```
+
+### Zamienić wartość jednego bitu/bajtu w bloku
+Modyfikowany blok zostaje niepoprawnie odszyfrowany oraz następny blok posiada zmieniony jeden bajt.
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_modify_one_byte.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl        7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  706c 4dae de4e 987c b99c 31f9 84be 5961 plM..N.|..1...Ya
+                                                              >  1010 1010 1010 1010 1010 fe10 1010 1010 ................
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_modify_one_byte.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  139a 7bcb 69a9 bc71 2dd1 0be2 e327 6d39 ..{.i..q-....'m9
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  6161 6161 b261 6161 6161 6161 6161 6161 aaaa.aaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_modify_one_byte.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  e71f 5192 5594 4b81 a74c c17a 49e8 9ab0 ..Q.U.K..L.zI...
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  6369 6520 7472 7a65 623a 2063 656e 6963 cie trzeb: cenic
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+### Zamiana miejscami bajtów wewnątrz bloku
+Modyfikowany blok zostaje uszkodzony oraz dwa bajty w następnym bloku zostają niepoprawnie xorowane (poprzez zamianę).
+```bash
+ ./diff.sh decrypted/alphabet-aes-cbc_swap_bytes_in_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  3d8e d1df 90cf e803 ab1e 447f 96c4 0a98 =.........D.....
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  6d6e 6f70 7172 585f 7576 7778 797a 6162 mnopqrX_uvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-cbc_swap_bytes_in_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  74ae 03d2 fbe4 4d1f c63b dd62 ea1f c406 t.....M..;.b....
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  6161 6161 6161 d4d4 6161 6161 6161 6161 aaaaaa..aaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-cbc_swap_bytes_in_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  bb68 1527 a3dd 4c11 56f9 e2eb f549 e979 .h.'..L.V....I.y
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  2c20 7465 6e20 b9b4 6c6b 6f20 7369 6520 , ten ..lko sie
+```
+
+### Usunąć fragment bloku
+Szyfrogram nie daje się odszyfrować.

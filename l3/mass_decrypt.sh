@@ -1,3 +1,4 @@
-for file in corrupted/*-aes-ecb_delete_byte*; do
+for file in corrupted/*-aes-cbc_*; do
+  echo $file
   ./decrypt.sh $file;
 done
