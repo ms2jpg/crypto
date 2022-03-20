@@ -749,3 +749,8 @@ Dalsza część wiadomości po usuniętym bajcie została uszkodzona poprzez prz
  2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  aaae ae59 1b37 57d3 bddf a619 1cba 5d4a ...Y.7W.......]J
                                                               >  c63b 4423 4c77 feef c70d f001 1150 ea .;D#Lw.......P.
 ```
+
+# Propagowanie błędów i ataki
+Błędy w transmisji mogą pojawiać się przypadkowo lub być celowym działaniem adwersarza:
+* błędy w bitach mają małą propagacje w trybach strumieniowych (np. CTR)
+* błędy w bitach w trybach blokowych (np. CBC) mogą zostać użyte do ataku np. [Padding oracle](https://sekurak.pl/czym-jest-padding-oracle-atak-i-ochrona/)
