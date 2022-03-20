@@ -54,7 +54,9 @@ class Corrupt:
 
     @staticmethod
     def delete_byte(data):
-        data[3] = bytes(list(data[3]).pop(6))
+        xd = list(data[3])
+        xd.pop(6)
+        data[3] = bytes(xd)
         return data
 
 

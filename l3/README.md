@@ -500,3 +500,252 @@ Modyfikowany blok zostaje uszkodzony oraz dwa bajty w następnym bloku zostają 
 
 ### Usunąć fragment bloku
 Szyfrogram nie daje się odszyfrować.
+
+## AES-CTR
+###  Usunąć cały blok
+Dalsze bloki zostają nieprawidłowo odszyfrowane poprzez przesunięcie licznika.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_delete_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  d4fe df7f 083d 23b6 6073 d4fe ea09 608e .....=#.`s....`.
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  7eec 4388 b4e3 70d8 6f6a 09d0 f5fb 17bd ~.C...p.oj......
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  520e ff60 6403 27e7 a7a6 0b6d 1662 fd7a R..`d.'....m.b.z
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_delete_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c2e7 c764 083e 21b3 6474 d2f7 e202 6a83 ...d.>!.dt....j.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  72e3 4d99 a4f0 62cd 7b7d 1fc9 ede0 17be r.M...b.{}......
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  520e ff60 6403 27e7 a7a6 0b6d 1662 fd7a R..`d.'....m.b.z
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_delete_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  c0ef c325 1d2d 3ab7 6774 93f5 e60d 6281 ...%.-:.gt....b.
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  3fa2 589d abb1 77d5 7677 1188 ffe8 13ff ?.X...w.vw......
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  520e ff60 6403 27e7 a7a6 0b6d 1662 fd7a R..`d.'....m.b.z
+```
+
+
+### Powielić cały blok
+Dalsze bloki zostają nieprawidłowo odszyfrowane poprzez przesunięcie licznika.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_duplicate_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  c4ee cf6f 0233 2dbc 6a65 c2e4 f017 7e94 ...o.3-.je....~.
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  64fa 5582 a4f3 60c8 7f7a 19c0 e5eb 1db3 d.U...`..z......
+                                                              >  2f70 8000 0561 4483 c2c0 6c05 7f08 8c08 /p...aD...l.....
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_duplicate_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c2e7 c764 083e 21b3 6474 d2f7 e202 6a83 ...d.>!.dt....j.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  72e3 4d99 a4f0 62cd 7b7d 1fc9 ede0 17be r.M...b.{}......
+                                                              >  237f 8e11 1572 5696 d6d7 7a1c 6713 8c0b #....rV...z.g...
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_duplicate_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  c9e7 cd25 133b 32bd 727c d6b6 ca0f 6ec2 ...%.;2.r|....n.
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  70eb 49d8 b1e3 79c9 787d 5ecb e9ef 1fbc p.I...y.x}^.....
+                                                              >  6e3e 9b15 1a33 438e dbdd 745d 751b 884a n>...3C...t]u..J
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+
+### Zamienić bloki miejscami
+Tylko bloki zamienione zostają nieprawidłowo odszyfrowane poprzez nieprawidłową wartość licznika przy ich deszyfracji, pozostałe bloki zostały poprawnie odczytane.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_block_swap.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  d4fe df7f 083d 23b6 6073 d4fe ea09 608e .....=#.`s....`.
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  c4ee cf6f 0233 2dbc 6a65 c2e4 f017 7e94 ...o.3-.je....~.
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab        6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_block_swap.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c2e7 c764 083e 21b3 6474 d2f7 e202 6a83 ...d.>!.dt....j.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c2e7 c764 083e 21b3 6474 d2f7 e202 6a83 ...d.>!.dt....j.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_block_swap.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  c0ef c325 1d2d 3ab7 6774 93f5 e60d 6281 ...%.-:.gt....b.
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  c9e7 cd25 133b 32bd 727c d6b6 ca0f 6ec2 ...%.;2.r|....n.
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+### Dodać zupełnie nowy blok szyfrogramu
+Wszystkie bloki po dodanym bloku zostają nieprawidłowo odszyfrowane z uwagi na przesunięty licznik o jedną pozycje.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_add_random_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv     |  d67a 4f9e 082f 3e57 0d83 1df3 a20b 7b16 .zO../>W......{.
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  c4ee cf6f 0233 2dbc 6a65 c2e4 f017 7e94 ...o.3-.je....~.
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  64fa 5582 a4f3 60c8 7f7a 19c0 e5eb 1db3 d.U...`..z......
+                                                              >  2f70 8000 0561 4483 c2c0 6c05 7f08 8c08 /p...aD...l.....
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_add_random_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  a981 1a35 8703 ce6b 6632 683f 759c d12a ...5...kf2h?u..*
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  c2e7 c764 083e 21b3 6474 d2f7 e202 6a83 ...d.>!.dt....j.
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  72e3 4d99 a4f0 62cd 7b7d 1fc9 ede0 17be r.M...b.{}......
+                                                              >  237f 8e11 1572 5696 d6d7 7a1c 6713 8c0b #....rV...z.g...
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_add_random_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile      |  5c92 7ec8 570f d5df df58 f0d1 2ec1 6930 \.~.W....X....i0
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  c9e7 cd25 133b 32bd 727c d6b6 ca0f 6ec2 ...%.;2.r|....n.
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  70eb 49d8 b1e3 79c9 787d 5ecb e9ef 1fbc p.I...y.x}^.....
+                                                              >  6e3e 9b15 1a33 438e dbdd 745d 751b 884a n>...3C...t]u..J
+                                                              >  02c9 f136 8835 ad66 5e85 8178 a152 2d4e ...6.5.f^..x.R-N
+```
+
+### Zamienić wartość jednego bitu/bajtu w bloku
+Tylko modyfikowany bajt został uszkodzony przy deszyfracji, pozostała część wiadomości jest poprawnie deszyfrowana.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_modify_one_byte.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl        7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  6d6e 6f70 7189 7374 7576 7778 797a 6162 mnopq.stuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_modify_one_byte.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  6161 6161 6161 6161 61ef 6161 6161 6161 aaaaaaaaa.aaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_modify_one_byte.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  6369 6520 7472 7a65 6261 2063 8d6e 6963 cie trzeba c.nic
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+
+### Zamiana miejscami bajtów wewnątrz bloku
+Tylko bajty na których została dokonana zmiana nieprawidłowo się deszyfrują, pozostała część wiadomości jest poprawna
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_swap_bytes_in_block.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  7778 797a 6162 e5e2 6566 6768 696a 6b6c wxyzab..efghijkl
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab        6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_swap_bytes_in_block.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  6161 6161 6161 e0e0 6161 6161 6161 6161 aaaaaa..aaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_swap_bytes_in_block.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  6369 6520 7472 e4fb 6261 2063 656e 6963 cie tr..ba cenic
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie         2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie
+```
+
+### Usunąć fragment bloku
+Dalsza część wiadomości po usuniętym bajcie została uszkodzona poprzez przesunięcie następnych bajtów o jeden bajt w lewo.
+```bash
+ ./diff.sh decrypted/alphabet-aes-ctr_delete_byte.bin
+```
+```diff
+ 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop        6162 6364 6566 6768 696a 6b6c 6d6e 6f70 abcdefghijklmnop
+ 7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef        7172 7374 7576 7778 797a 6162 6364 6566 qrstuvwxyzabcdef
+ 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv        6768 696a 6b6c 6d6e 6f70 7172 7374 7576 ghijklmnopqrstuv
+ 7778 797a 6162 6364 6566 6768 696a 6b6c wxyzabcdefghijkl     |  7778 797a 6162 e56c b6b5 3827 1243 b8aa wxyzab.l..8'.C..
+ 6d6e 6f70 7172 7374 7576 7778 797a 6162 mnopqrstuvwxyzab     |  e4b5 bb46 4930 5aca a0c7 fe13 0fbe 1f4a ...FI0Z........J
+                                                              >  c63b 4423 4c77 feef c70d f001 1150 ea .;D#Lw.......P.
+```
+```bash
+ ./diff.sh decrypted/same_byte-aes-ctr_delete_byte.bin
+```
+```diff
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa        6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  6161 6161 6161 e068 b1b3 312f 1949 b5a6 aaaaaa.h..1/.I..
+ 6161 6161 6161 6161 6161 6161 6161 6161 aaaaaaaaaaaaaaaa     |  ebbb aa56 5a22 4fde b7d1 e70b 14be 1c4a ...VZ"O........J
+                                                              >  c63b 4423 4c77 feef c70d f001 1150 ea .;D#Lw.......P.
+```
+```bash
+ ./diff.sh decrypted/text-aes-ctr_delete_byte.bin
+```
+```diff
+ 4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno         4c69 7477 6f2c 204f 6a63 7a79 7a6e 6f20 Litwo, Ojczyzno
+ 6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes         6d6f 6a61 2120 7479 206a 6573 7465 7320 moja! ty jestes
+ 6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile         6a61 6b20 7a64 726f 7769 6520 496c 6520 jak zdrowie Ile
+ 6369 6520 7472 7a65 6261 2063 656e 6963 cie trzeba cenic     |  6369 6520 7472 e46b b1f2 332b 1641 b7eb cie tr.k..3+.A..
+ 2c20 7465 6e20 7479 6c6b 6f20 7369 6520 , ten tylko sie      |  aaae ae59 1b37 57d3 bddf a619 1cba 5d4a ...Y.7W.......]J
+                                                              >  c63b 4423 4c77 feef c70d f001 1150 ea .;D#Lw.......P.
+```

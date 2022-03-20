@@ -52,4 +52,5 @@ class AES_ECB:
     @staticmethod
     def split_block(data, size):
         for i in range(0, len(data), size):
+            d = data[i:i + size]
             yield data[i:i + size]

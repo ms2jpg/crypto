@@ -15,7 +15,7 @@ class AES_CTR(AES_ECB):
 
     def ctr(self, block_number):
         ctr = list(self.iv)
-        ctr[0] += 1
+        ctr[-1] += block_number
         for i in range(len(ctr)):
             if ctr[-i] > 255:
                 overflow = int(ctr[-i] / 256)
@@ -36,6 +36,7 @@ class AES_CTR(AES_ECB):
         i = 0
         for block in AES_ECB.split_block(msg, AES_ECB.BLOCK_SIZE):
             ctr = self.ctr(i)
+            # print(i, ctr)
             new_block = AES_ECB.byte_xor(block, ctr)
             if self.verbose:
                 print(block, '->', new_block.hex())
@@ -48,9 +49,12 @@ class AES_CTR(AES_ECB):
         i = 0
         for block in AES_ECB.split_block(msg, AES_ECB.BLOCK_SIZE):
             ctr = self.ctr(i)
+            # print(i, ctr)
+            print(block)
             new_block = AES_ECB.byte_xor(block, ctr)
             decrypted += self.unpad(new_block)
             if self.verbose:
                 print(block.hex(), '->', new_block)
             # print(new_block)
+            i +=  1
         return decrypted
