@@ -42,9 +42,17 @@ for algo in params:
         with open(file, 'rb') as f:
             data = pad(f.read())
             start_time = time.time()
-            aes.encrypt(data)
+            encrypted = aes.encrypt(data)
             time_passed = time.time() - start_time
-            results[algo][file] = time_passed
-print(';'.join(['algo', *glob.glob('texts/*.txt')]))
-for algo in results:
-    print(';'.join([algo, *map(str, results[algo].values())]).replace('.', ','))
+            results[algo][file] = {'encrypt': time_passed}
+            start_time = time.time()
+            aes.decrypt(encrypted)
+            time_passed = time.time() - start_time
+            results[algo][file]['decrypt'] = time_passed
+
+for mode in ['encrypt', 'decrypt']:
+    print(mode)
+    print(';'.join(['algo', *glob.glob('texts/*.txt')]))
+    for algo in results:
+        print(';'.join([algo, *map(str, map(lambda x: x[mode], results[algo].values()))]).replace('.', ','))
+    print('\n\n')

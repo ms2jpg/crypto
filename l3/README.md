@@ -1,15 +1,3 @@
-- [Testy szybkości](#testy-szybko-ci)
-- [Anomalie](#anomalie)
-  * [AES-EBC](#aes-ebc)
-    + [Usunąć cały blok](#usun---ca-y-blok)
-    + [Powielić cały blok](#powieli--ca-y-blok)
-    + [Zamienić bloki miejscami](#zamieni--bloki-miejscami)
-    + [Dodać zupełnie nowy blok szyfrogramu](#doda--zupe-nie-nowy-blok-szyfrogramu)
-    + [Zmienić wartość jednego bitu/bajtu w bloku](#zmieni--warto---jednego-bitu-bajtu-w-bloku)
-    + [Zamiana miejscami bajtów wewnątrz bloku](#zamiana-miejscami-bajt-w-wewn-trz-bloku)
-    + [Usunąć fragment bloku](#usun---fragment-bloku)
-
-
 # Testy szybkości
 
 |Plik| Rozmiar  |
@@ -19,7 +7,28 @@
 |texts/pan-tadeusz-x200.txt|   95M    |
 |texts/pan-tadeusz-x2000.txt|   942M   |
 
-![benchmarks.png](benchmarks.png)
+## Szyfrowanie
+![benchmarks_encrypt.png](benchmarks_encrypt.png)
+
+| algo        | texts/pan-tadeusz-x200.txt | texts/pan-tadeusz-x2000.txt | texts/pan-tadeusz-x20.txt | texts/pan-tadeusz-x1.txt |
+|-------------|----------------------------|-----------------------------|---------------------------|--------------------------|
+| AES-128-ECB | 0.5423393249511719s        | 5.335513114929199s          | 0.08556270599365234s      | 0.00409698486328125s     |
+| AES-128-CBC | 0.6105117797851562s        | 6.098082780838013s          | 0.09098601341247559s      | 0.004996538162231445s    |
+| AES-128-CFB | 7.7905592918396s           | 78.09991574287415s          | 0.814338207244873s        | 0.04111170768737793s     |
+| AES-128-OFB | 0.6066484451293945s        | 6.111303091049194s          | 0.09192371368408203s      | 0.0052831172943115234s   |
+| AES-128-CTR | 1.564948320388794s         | 16.72139000892639s          | 0.18229269981384277s      | 0.012053251266479492s    |
+
+# Deszyfrowanie
+![benchmarks_decrypt.png](benchmarks_decrypt.png)
+
+| algo        | texts/pan-tadeusz-x200.txt | texts/pan-tadeusz-x2000.txt | texts/pan-tadeusz-x20.txt | texts/pan-tadeusz-x1.txt |
+|-------------|----------------------------|-----------------------------|---------------------------|--------------------------|
+| AES-128-ECB | 0,5488913059234619s        | 5,370697259902954s          | 0,04987931251525879s      | 0,002453327178955078s    |
+| AES-128-CBC | 0,6312170028686523s        | 6,2742674350738525s         | 0,059128761291503906s     | 0,002940654754638672s    |
+| AES-128-CFB | 7,788592100143433s         | 82,31377649307251s          | 0,7813680171966553s       | 0,039630889892578125s    |
+| AES-128-OFB | 0,6162829399108887s        | 6,336484909057617s          | 0,059990882873535156s     | 0,0028340816497802734s   |
+| AES-128-CTR | 1,5615899562835693s        | 15,940932512283325s         | 0,15744352340698242s      | 0,008603572845458984s    |
+
 
 Czas szyfrowania plików jest liniowy. CFB jest o wyraźnie wolniejszy niż pozostałe tryby blokowe, które posiadają podobną charakterystykę.
 
