@@ -31,6 +31,7 @@
 
 
 Czas szyfrowania plików jest liniowy. CFB jest o wyraźnie wolniejszy niż pozostałe tryby blokowe, które posiadają podobną charakterystykę.
+Może to wynikać z faktu, że CFB potrzebuje do szyfrowania zarówno dane z poprzedniego bloku jak i tekstu jawnego co uniemożliwia zrównoleglenie operacji. ECB jest trybem najprostszym z czego wynika bardzo krótki czas szyfrowania oraz deszyfrowania, lecz wiąże się to z dużą podatnością na ataki. Podobnie krótki czas ma tryb CTR z uwagi na niezależność szyfrowania kolejnych bloków między sobą oraz proste operacji inkrementacji licznika oraz xorowania z licznikiem.
 
 # Anomalie
 ## AES-EBC
@@ -761,5 +762,6 @@ Dalsza część wiadomości po usuniętym bajcie została uszkodzona poprzez prz
 
 # Propagowanie błędów i ataki
 Błędy w transmisji mogą pojawiać się przypadkowo lub być celowym działaniem adwersarza:
-* błędy w bitach mają małą propagacje w trybach strumieniowych (np. CTR)
+* Błędy w bitach mają małą propagacje w trybach strumieniowych (np. CTR). Wyjątkiem są błędy, których efektem jest zmiana liczby bloków, ponieważ w dla wybranych implementacji może dojść do przestawienia licznika i błędnego odszyfrowania dalszych wiadomości.
+* dla standardowych trybów blokowych propoagacja błędu jest niska i zazwyczaj ma zakres tylko uszkodzonych bloków
 * błędy w bitach w trybach blokowych (np. CBC) mogą zostać użyte do ataku np. [Padding oracle](https://sekurak.pl/czym-jest-padding-oracle-atak-i-ochrona/)
