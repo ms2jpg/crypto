@@ -72,6 +72,6 @@ def generate_two_congurent_primes_in_range(lower, upper):
 
 p, q = generate_two_congurent_primes_in_range(1000000, 2000000)
 a = BBS(p, q)
-l = sys.argv[1] if 1 in sys.argv else 20000
+l = int(sys.argv[1]) if len(sys.argv) > 1 else 20000
 x = a.generate_bits(l)
 print(x, end='')
