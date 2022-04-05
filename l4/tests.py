@@ -79,6 +79,11 @@ for filename in glob.glob('20k-*.txt'):
     print(f'Testfile {filename}:')
     with open(filename) as f:
         data = f.read().strip()
+    if len(data) < 20000:
+        print(f'{filename} is shorter than 20KB')
+        continue
+    if len(data) > 20000:
+        data = data[0:20000]
 
     for test_name in tests:
         test_result, test_data = tests[test_name](data)
