@@ -1,6 +1,8 @@
 from math import gcd
 from random import randint, shuffle
 import sys
+import numpy
+import json
 
 def is_prime(n):
     if n < 2:
@@ -29,14 +31,14 @@ class BBS:
     seed = 0
     generatedValues = []
 
-    def __init__(self, p, q):
+    def __init__(self, p, q, sd=None):
         if not (is_prime(q) and is_prime(p)) or p == q:
             raise Exception("P | Q not prime")
 
         self.p = p
         self.q = q
         self.n = p * q
-        self.set_seed()
+        self.set_seed(sd)
 
     def set_blum_int(self, p, q):
         if not (is_prime(q) and is_prime(p)) or p == q:
@@ -45,10 +47,18 @@ class BBS:
         self.q = q
         self.n = p * q
 
-    def set_seed(self):
+    def set_seed(self, sd = None):
+        if sd is not None:
+            self.seed = sd
+            return
         while not coprime(self.n, self.seed):
             self.seed = randint(0, self.n - 1)
-        print(f'p: {self.p}\nq: {self.q}\nseed: {self.seed}\n', file=sys.stderr)
+        d = {
+            'p': self.p,
+            'q': self.q,
+            'seed': self.seed
+        }
+        print(json.dumps(d), file=sys.stderr)
 
     def generate_bits(self, amount):
         prev = self.seed ** 2 % self.n
@@ -70,8 +80,9 @@ def generate_two_congurent_primes_in_range(lower, upper):
     return congurentPrimes if len(congurentPrimes) == 2 else [-1, -1]
 
 
-p, q = generate_two_congurent_primes_in_range(1000000, 2000000)
-a = BBS(p, q)
-l = int(sys.argv[1]) if len(sys.argv) > 1 else 20000
-x = a.generate_bits(l)
-print(x, end='')
+if __name__ == "__main__":
+    p, q = generate_two_congurent_primes_in_range(1000000, 2000000)
+    a = BBS(p, q)
+    l = int(sys.argv[1]) if len(sys.argv) > 1 else 20000
+    x = a.generate_bits(l)
+    print(x, end='')
