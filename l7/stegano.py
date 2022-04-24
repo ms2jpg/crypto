@@ -18,7 +18,8 @@ class Stegano:
     def to_bits(s):
         result = []
         for c in s:
-            bits = bin(ord(c))[2:]
+            bits = bin(c)[2:]
+
             bits = '00000000'[len(bits):] + bits
             result.extend([int(b) for b in bits])
         return result
@@ -34,7 +35,7 @@ class Stegano:
     def embed_message(self, msg):
         if len(msg) > self.max_message_size:
             raise Exception('Max message size exceeded')
-        msg_bits = Stegano.to_bits(msg + '\n\n\n')
+        msg_bits = Stegano.to_bits(msg + b'\n\n\n')
         pos_gen = self.position()
         for bit in msg_bits:
             row, col, cpos = next(pos_gen)
@@ -57,7 +58,7 @@ class Stegano:
                 buf = []
             byte = self.img[row][col][cpos]
             buf.append(byte % 2)
-        return message[:-3].decode('utf-8')
+        return message[:-3]
 
     def save_image(self, path):
         iio.imwrite(path, self.img)
@@ -67,6 +68,6 @@ class Stegano:
 # s.embed_message("politechnika")
 # s.save_image('hidden.bmp')
 
-
-s = Stegano('hidden.bmp')
-print(s.get_message())
+#
+# s = Stegano('hidden.bmp')
+# print(s.get_message())
