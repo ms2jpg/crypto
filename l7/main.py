@@ -9,7 +9,10 @@ window = Tk()
 window.title("Steganografia - Krzysztof Krzyżaniak")
 image = None
 stegano = None
-Label(window, text="Program pozwala na na ukrycie danych w pliku typu BMP. Payload może zawierać").grid(columnspan=2)
+Label(window, text="Program pozwala na na ukrycie danych w pliku typu BMP. Kliknij LOAD IMAGE aby załadować obrazek!\n" +
+                   "Algorytm osadza ukrytą wiadomość na najmniej znaczących bitach pixeli. Maksymalny rozmiar\n" +
+                   "wiadomości w bajtach to (liczba_pixeli - 1) * 3. Ukrywa wiadomość zawsze kończy się znacznikiem\n" +
+                   " 0x0a 0x0a 0x0a.").grid(columnspan=2)
 
 
 def load_image():
@@ -36,7 +39,7 @@ def hide_message():
         with open(file_path.name, 'rb') as f:
             payload = f.read()
         if len(payload) > stegano.max_message_size:
-            messagebox.showerror('Za duży rozmiar pliku', 'Maksymlany rozmiar ukrywanego pliku to {} bajtów!', stegano.max_message_size)
+            messagebox.showerror('Za duży rozmiar pliku', 'Maksymlany rozmiar ukrywanego pliku to {} bajtów!'.format(stegano.max_message_size))
             return
         stegano.embed_message(payload)
         filename_to_save = asksaveasfile(mode='w', defaultextension='.bmp')

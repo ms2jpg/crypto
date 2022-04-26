@@ -35,7 +35,9 @@ class Stegano:
     def embed_message(self, msg):
         if len(msg) > self.max_message_size:
             raise Exception('Max message size exceeded')
+
         msg_bits = Stegano.to_bits(msg + b'\n\n\n')
+
         pos_gen = self.position()
         for bit in msg_bits:
             row, col, cpos = next(pos_gen)
