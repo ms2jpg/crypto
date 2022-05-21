@@ -1,0 +1,28 @@
+Partial SHA-1-Collision Search
+
+Filename original: C:\Users\Krzysztof\Desktop\l9\2\xx.txt
+Filename fake: C:\Users\Krzysztof\Desktop\l9\2\xx-mod.txt
+
+PROJECTED EFFORTS
+
+Calculating time:  0 year(s), 0 day(s), 0 hour(s), 0 minute(s) und 1.72 second(s)
+Steps required
+
+
+COMPUTING EFFORTS
+
+Calculating time:  0 year(s), 0 day(s), 0 hour(s), 0 minute(s) und 0.91 second(s)
+Steps required
+Hash operations performed
+
+RunNo.     Steps until collision     Check of the collision     Total steps
+
+   01                     106,560                       106,549                  213,109
+   02                      58,288                        57,504                  115,792
+
+
+
+TEXT MODIFICATION
+
+18 bytes were added to the harmless message.
+18 bytes were added to the dangerous message.
